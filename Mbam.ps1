@@ -65,6 +65,4 @@ if (Test-Path $mbDir\mbam* -PathType Leaf)
 
 }
 
-
-mbam.exe /quickscan
 #Set-ItemProperty -Path REGISTRY::HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Policies\System -Name ConsentPromptBehaviorAdmin -Value 1
