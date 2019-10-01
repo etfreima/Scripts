@@ -15,6 +15,8 @@ ELSE
 if (Test-Path "C:\ProgramData\Malwarebytes" -PathType Container)
 {
     Write-Host "Malware Bytes is already installed" -ForegroundColor Red
+
+    #Write IPv4 address of system that already has mbam installed
     $ipv4 = (Test-Connection -ComputerName $env:COMPUTERNAME -Count 1).IPV4Address.IPAddressToString
         Write-Host "$ipv4 already installed" -ForegroundColor Red
 
