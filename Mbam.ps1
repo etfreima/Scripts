@@ -3,11 +3,14 @@
 $mbDir = "C:\ScriptMBDL"
 $mbamVer = "mb3-setup-consumer-3.8.3.2965-1.0.627-1.0.12703.exe"
 
+#Check if script has been run before
+
 if (Test-Path $mbDir -PathType Container)
 {Write-Host "$mbDir already exists" -ForegroundColor Red}
 ELSE
 {New-Item -ItemType directory -Path $mbDir}
 
+#Check if mbam is already installed (without need for admin)
 
 if (Test-Path "C:\ProgramData\Malwarebytes" -PathType Container)
 {
@@ -26,11 +29,9 @@ if (Test-Path "C:\ProgramData\Malwarebytes" -PathType Container)
         }
         Add-Content $mbDir\log.txt "$ipv4 : Already Installed"
     Start-Sleep -s 10
-    return
 }
 
-
-
+#Download installer using Invoke-WebRequest if available, or WebClient if <= Win7
 
 else
 {
@@ -48,12 +49,22 @@ else
     $WebClient.DownloadFile($url, $output)
 }
 
+#Begin silent installation and remove installer
+
 Start-Process -FilePath "$mbDir\mbam.exe" -ArgumentList "/NOCANCEL /NORESTART /VERYSILENT /SUPPRESSMSGBOXES"
 
 Start-Sleep -s 35
 
 rm -Force $mbDir/mbam*
 
+if (Test-Path $mbDir\mbam* -PathType Leaf)
+{
+    Write-Host "Error in removing installer." -ForegroundColor Red
+    return
 }
 
-Set-ItemProperty -Path REGISTRY::HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Policies\System -Name ConsentPromptBehaviorAdmin -Value 1
+}
+
+
+mbam.exe /quickscan
+#Set-ItemProperty -Path REGISTRY::HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Policies\System -Name ConsentPromptBehaviorAdmin -Value 1
